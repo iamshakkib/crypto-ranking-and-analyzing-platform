@@ -19,7 +19,7 @@ Ans:- True, this project doesn't need backend at all. But simply hitting the Rap
 ## Frontend
 
 ### Commands I used to make this project:
-#### 1) npx create-next-app frontend
+#### 1) npx create-next-app crypto-frontend
 #### 2) npm i recharts
 #### 3) npm i --force @headless/react @heroicons/react
 #### 4) npm install -D tailwindcss postcss autoprefixer
