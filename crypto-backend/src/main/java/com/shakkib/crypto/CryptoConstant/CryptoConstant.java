@@ -11,4 +11,5 @@ public class CryptoConstant {
     public  static String apiHost = "coinranking1.p.rapidapi.com";
     public  static String apiKey = "88ccb36550mshd9637b8b7221a61p1863ddjsn0beb5b24d6bf";
     public static String timeZone = "GMT";
+    
 }
