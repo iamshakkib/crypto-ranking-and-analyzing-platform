@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RedisConfig {
 
-   // @Value("redis.url")
-    private String redisURL = "redis://127.0.0.1:6379";
+    @Value("${redis.url}")
+    private String redisURL;
 
     @Bean
     public Config config() {

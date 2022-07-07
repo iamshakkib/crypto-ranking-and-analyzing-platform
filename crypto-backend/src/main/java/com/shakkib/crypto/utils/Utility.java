@@ -1,5 +1,7 @@
 package com.shakkib.crypto.utils;
 
+import com.shakkib.crypto.CryptoConstant.CryptoConstant;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
@@ -13,7 +15,7 @@ public class Utility {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         final String formattedDtm = Instant.ofEpochSecond(unixTime)
-                .atZone(ZoneId.of("GMT"))
+                .atZone(ZoneId.of(CryptoConstant.timeZone))
                 .format(formatter);
         return formattedDtm;
     }

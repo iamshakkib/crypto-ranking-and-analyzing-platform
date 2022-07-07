@@ -1,5 +1,6 @@
 package com.shakkib.crypto.service;
 
+import com.shakkib.crypto.CryptoConstant.CryptoConstant;
 import com.shakkib.crypto.model.*;
 import com.shakkib.crypto.utils.HttpUtils;
 import io.github.dengliming.redismodule.redisjson.RedisJSON;
@@ -21,11 +22,7 @@ import java.util.Map;
 @Slf4j
 public class CoinsDataService {
 
-    public static final String GET_COINS_API = "https://coinranking1.p.rapidapi.com/coins?referenceCurrencyUuid=yhjMzLPhuIDl&timePeriod=24h&tiers%5B0%5D=1&orderBy=marketCap&orderDirection=desc&limit=50&offset=0";
-    public static final String GET_COIN_HISTORY_API = "https://coinranking1.p.rapidapi.com/coin/";
-    public static final String COIN_HISTORY_TIME_PERIOD_PARAM = "/history?timePeriod=";
-    public static final List<String> timePeriods = List.of("24h", "7d", "30d", "3m", "1y", "3y", "5y");
-    public static final String REDIS_KEY_COINS = "coins";
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -38,7 +35,7 @@ public class CoinsDataService {
     public void fetchCoins() {
         log.info("Inside fetchCoins()");
         ResponseEntity<Coins> coinsEntity =
-                restTemplate.exchange(GET_COINS_API,
+                restTemplate.exchange(CryptoConstant.GET_COINS_API,
                         HttpMethod.GET,
                         HttpUtils.getHttpEntity(),
                         Coins.class);
@@ -52,7 +49,7 @@ public class CoinsDataService {
         List<CoinInfo> allCoins = getAllCoinsFromRedisJSON();
 
         allCoins.forEach(coinInfo -> {
-            timePeriods.forEach(s -> {
+            CryptoConstant.timePeriods.forEach(s -> {
                 try {
                     fetchCoinHistoryForTimePeriod(coinInfo, s);
                     Thread.sleep(200); // To Avoid Rate Limit of rapid API of 5 Request/Sec
@@ -89,7 +86,7 @@ public class CoinsDataService {
 
     private void fetchCoinHistoryForTimePeriod(CoinInfo coinInfo, String timePeriod) {
         log.info("Fetching Coin History of {} for Time Period {}", coinInfo.getName(), timePeriod);
-        String url = GET_COIN_HISTORY_API + coinInfo.getUuid() + COIN_HISTORY_TIME_PERIOD_PARAM + timePeriod;
+        String url = CryptoConstant.GET_COIN_HISTORY_API + coinInfo.getUuid() + CryptoConstant.COIN_HISTORY_TIME_PERIOD_PARAM + timePeriod;
         ResponseEntity<CoinPriceHistory> coinPriceHistoryResponseEntity =
                 restTemplate.exchange(url,
                         HttpMethod.GET,
@@ -119,7 +116,7 @@ public class CoinsDataService {
 
     private List<CoinInfo> getAllCoinsFromRedisJSON() {
         CoinData coinData =
-                redisJSON.get(REDIS_KEY_COINS,
+                redisJSON.get(CryptoConstant.REDIS_KEY_COINS,
                         CoinData.class,
                         new GetArgs().path(".data").indent("\t").newLine("\n").space(" "));
         log.info("allCoins: " + coinData);
@@ -127,7 +124,7 @@ public class CoinsDataService {
     }
 
     private void storeCoinsToRedisJSON(Coins coins) {
-        redisJSON.set(REDIS_KEY_COINS, SetArgs
+        redisJSON.set(CryptoConstant.REDIS_KEY_COINS, SetArgs
                 .Builder.create(".", GsonUtils.toJson(coins)));
     }
 
